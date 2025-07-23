@@ -40,7 +40,7 @@ dependencies: [
 ### Step 1: Import the SDK
 
 ```swift
-import ASAgentSDK
+import ASAAttributionSDK
 ```
 
 ### Step 2: Configure on App Launch
@@ -49,7 +49,7 @@ import ASAgentSDK
 
 ```swift
 import SwiftUI
-import ASAgentSDK
+import ASAAttributionSDK
 
 @main
 struct MyApp: App {
@@ -70,7 +70,7 @@ struct MyApp: App {
 
 ```swift
 import UIKit
-import ASAgentSDK
+import ASAAttributionSDK
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
