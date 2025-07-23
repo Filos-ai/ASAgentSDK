@@ -10,6 +10,7 @@ let package = Package(
     products: [
         .library(
             name: "ASAAttributionSDK",
+            type: .static,
             targets: ["ASAAttributionSDK"]
         ),
     ],
@@ -22,5 +23,6 @@ let package = Package(
                 .linkedFramework("AdServices", .when(platforms: [.iOS]))
             ]
         )
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 ) 
