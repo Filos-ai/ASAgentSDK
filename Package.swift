@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "ASAAttributionSDK",
+    name: "ASAgentSDK",
     platforms: [
         // The SDK supports iOS 13+, but attribution is only performed on iOS 14.3+.
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "ASAAttributionSDK",
+            name: "ASAgentSDK",
             type: .static,
             targets: ["ASAAttributionSDK"]
         ),
