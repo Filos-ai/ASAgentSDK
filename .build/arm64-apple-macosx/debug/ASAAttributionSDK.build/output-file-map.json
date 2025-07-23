@@ -1,0 +1,47 @@
+{
+  "": {
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/master.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/APIClient.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/APIClient.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/APIClient.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/APIClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/APIClient.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/ASAAttributionManager.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionManager.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionManager.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionManager.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/ASAAttributionProtocols.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionProtocols.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionProtocols.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionProtocols~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionProtocols.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/ASAAttributionSDK+Usage.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK+Usage.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK+Usage.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK+Usage~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK+Usage.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/ASAAttributionSDK.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/StateManager.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/StateManager.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/StateManager.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/StateManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/StateManager.swiftdeps"
+  },
+  "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/Sources/ASAAttributionSDK/TransactionMonitor.swift": {
+    "dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/TransactionMonitor.d",
+    "object": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/TransactionMonitor.swift.o",
+    "swiftmodule": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/TransactionMonitor~partial.swiftmodule",
+    "swift-dependencies": "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/TransactionMonitor.swiftdeps"
+  }
+}

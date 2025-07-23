@@ -1,0 +1,4 @@
+module ASAAttributionSDK {
+    header "/Users/leolitrico/Dev/asagent/SDK/ASAAttributionSDK/.build/arm64-apple-macosx/debug/ASAAttributionSDK.build/ASAAttributionSDK-Swift.h"
+    requires objc
+}
