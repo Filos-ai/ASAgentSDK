@@ -2,15 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "ASAgentSDK",
+    name: "ASAAttributionSDK",
     platforms: [
         // The SDK supports iOS 13+, but attribution is only performed on iOS 14.3+.
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "ASAgentSDK",
-            type: .static,
+            name: "ASAAttributionSDK",
             targets: ["ASAAttributionSDK"]
         ),
     ],
@@ -23,6 +22,5 @@ let package = Package(
                 .linkedFramework("AdServices", .when(platforms: [.iOS]))
             ]
         )
-    ],
-    swiftLanguageVersions: [.v5]
+    ]
 ) 

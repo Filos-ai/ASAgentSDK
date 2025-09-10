@@ -30,6 +30,44 @@ public class ASAAttributionSDK {
         #endif
     }
     
+    // MARK: - Install Type Detection
+    
+    /// Determines if this is a first install vs an app update
+    /// Uses persisted state if available, otherwise determines from Documents directory creation date
+    /// Once determined, the result is persisted for consistency across app launches
+    /// - Returns: True if this appears to be a first install, false if it's an update
+    private func isFirstInstallVsUpdate() -> Bool {
+        // Check if we've already determined and persisted the install type
+        if stateManager.installTypeResolved {
+            let installType = stateManager.isFirstInstall ? "first install" : "app update"
+            logInfo("Install type already determined from persistent storage: \(installType)")
+            return stateManager.isFirstInstall
+        }
+        
+        // First time determining install type - use Documents directory creation date
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last,
+              let attributes = try? FileManager.default.attributesOfItem(atPath: documentsURL.path),
+              let creationDate = attributes[.creationDate] as? Date else {
+            logInfo("Could not determine install type from Documents directory - defaulting to treating as fresh install")
+            let isFirstInstall = true
+            stateManager.setInstallType(isFirstInstall: isFirstInstall)
+            return isFirstInstall
+        }
+        
+        // If Documents directory was created recently (e.g., within last 24 hours), 
+        // it's likely a fresh install
+        let timeInterval = Date().timeIntervalSince(creationDate)
+        let oneDayInSeconds: TimeInterval = 24 * 60 * 60
+        
+        let isFirstInstall = timeInterval < oneDayInSeconds
+        logInfo("Install type determined from Documents directory created \(String(format: "%.1f", timeInterval / 3600)) hours ago: \(isFirstInstall ? "first install" : "app update")")
+        
+        // Persist the determination for future app launches
+        stateManager.setInstallType(isFirstInstall: isFirstInstall)
+        
+        return isFirstInstall
+    }
+    
     /// Returns true if the SDK is running in a production environment
     /// - Note: Logging is disabled in production environments for performance and privacy
     public static var isProduction: Bool {
@@ -74,6 +112,15 @@ public class ASAAttributionSDK {
             
             self.logInfo("Starting ASA Attribution SDK configuration flow")
             self.logInfo(self.stateManager.debugDescription())
+            
+            // Check if this is a first install vs an app update
+            // Only proceed with SDK operations for first installs
+            if !self.isFirstInstallVsUpdate() {
+                self.logInfo("SDK detected app update (not first install) - skipping attribution flow to avoid duplicate backend entries")
+                return
+            }
+            
+            self.logInfo("SDK detected first install - proceeding with attribution flow")
             
             // Start transaction monitoring immediately to avoid missing any transactions
             if !self.stateManager.transactionCaptured {
@@ -434,6 +481,13 @@ public class ASAAttributionSDK {
     }
     
     // MARK: - Public Utility Methods
+    
+    /// Returns whether this appears to be a first install vs an app update
+    /// This method is exposed publicly so developers can use it for their own logic if needed
+    /// - Returns: True if this appears to be a first install, false if it's an update
+    public func isFirstInstall() -> Bool {
+        return isFirstInstallVsUpdate()
+    }
     
     /// Returns the current state for debugging purposes
     public func getDebugState() -> String {

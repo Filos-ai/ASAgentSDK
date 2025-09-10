@@ -255,6 +255,8 @@ final class StateManager {
         case associationComplete = "ai.asagent.association_complete"
         case userId = "ai.asagent.user_id"
         case originalTransactionID = "ai.asagent.original_transaction_id"
+        case installTypeResolved = "ai.asagent.install_type_resolved"
+        case isFirstInstall = "ai.asagent.is_first_install"
     }
     
     // MARK: - Properties
@@ -310,6 +312,18 @@ final class StateManager {
     var originalTransactionID: String? {
         get { queue.sync { userDefaults.string(forKey: StateKey.originalTransactionID.rawValue) } }
         set { queue.async(flags: .barrier) { self.userDefaults.set(newValue, forKey: StateKey.originalTransactionID.rawValue) } }
+    }
+    
+    /// Whether the install type has been resolved and persisted
+    var installTypeResolved: Bool {
+        get { queue.sync { userDefaults.bool(forKey: StateKey.installTypeResolved.rawValue) } }
+        set { queue.async(flags: .barrier) { self.userDefaults.set(newValue, forKey: StateKey.installTypeResolved.rawValue) } }
+    }
+    
+    /// Whether this is a first install (only valid when installTypeResolved is true)
+    var isFirstInstall: Bool {
+        get { queue.sync { userDefaults.bool(forKey: StateKey.isFirstInstall.rawValue) } }
+        set { queue.async(flags: .barrier) { self.userDefaults.set(newValue, forKey: StateKey.isFirstInstall.rawValue) } }
     }
     
     // MARK: - Computed Properties
@@ -378,11 +392,20 @@ final class StateManager {
         }
     }
     
+    /// Sets and persists the install type determination
+    func setInstallType(isFirstInstall: Bool) {
+        queue.sync(flags: .barrier) {
+            self.userDefaults.set(isFirstInstall, forKey: StateKey.isFirstInstall.rawValue)
+            self.userDefaults.set(true, forKey: StateKey.installTypeResolved.rawValue)
+        }
+    }
+    
     // MARK: - Debugging
     
     /// Returns a string representation of the current state for debugging
     func debugDescription() -> String {
         return queue.sync {
+            let installTypeInfo = installTypeResolved ? (isFirstInstall ? "First Install" : "App Update") : "Not Determined"
             return """
             ASA Attribution SDK State:
             - User Created: \(userCreated)
@@ -392,6 +415,8 @@ final class StateManager {
             - Association Complete: \(associationComplete)
             - User ID: \(userId ?? "nil")
             - Original Transaction ID: \(originalTransactionID ?? "nil")
+            - Install Type Resolved: \(installTypeResolved)
+            - Install Type: \(installTypeInfo)
             - Should Terminate: \(shouldTerminate)
             - Can Associate: \(canAssociate)
             """
