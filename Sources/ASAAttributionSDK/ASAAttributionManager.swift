@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(AdServices)
 import AdServices
+#endif
 
 public final class ASAAttributionManager {
     public enum AttributionResult {
@@ -14,7 +16,7 @@ public final class ASAAttributionManager {
     }
 
     public static func fetchAttribution(completion: @escaping (AttributionResult) -> Void) {
-        #if os(iOS)
+        #if canImport(AdServices) && os(iOS)
         if #available(iOS 14.3, *) {
             Task {
                 do {
@@ -28,7 +30,7 @@ public final class ASAAttributionManager {
             completion(.unavailable(reason: "Apple Search Ads attribution is only supported on iOS 14.3 and later."))
         }
         #else
-        completion(.unavailable(reason: "Apple Search Ads attribution is only supported on iOS 14.3 and later."))
+        completion(.unavailable(reason: "Apple Search Ads attribution is only supported on iOS devices running iOS 14.3 and later. Not available on macOS or iPad apps running on macOS."))
         #endif
     }
     

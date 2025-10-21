@@ -39,29 +39,41 @@ public final class TransactionMonitor: NSObject {
             self.hasCapturedTransaction = false
             self.transactionIdCallback = onTransactionId
             
+            // CRITICAL: All StoreKit operations must be on main thread
+            // AND only on iOS (not macOS or iPad-on-Mac)
             DispatchQueue.main.async {
-                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Starting transaction monitoring")
-                
                 #if os(iOS)
-                if #available(iOS 15.0, *) {
-                    ASAAttributionSDK.shared.logInfo("TransactionMonitor: Using StoreKit 2 listener (iOS 15+)")
-                    self.startStoreKit2Listener()
-                } else {
-                    ASAAttributionSDK.shared.logInfo("TransactionMonitor: Using StoreKit 1 listener (iOS < 15)")
-                    self.startStoreKit1Listener()
+                // Additional runtime check for iPad apps on macOS
+                var shouldStartMonitoring = true
+                if #available(iOS 14.0, *) {
+                    if ProcessInfo.processInfo.isiOSAppOnMac {
+                        ASAAttributionSDK.shared.logInfo("TransactionMonitor: iPad app on macOS detected - StoreKit monitoring disabled")
+                        shouldStartMonitoring = false
+                    }
+                }
+                
+                // Only skip if on macOS, otherwise run normal iOS code
+                if shouldStartMonitoring {
+                    ASAAttributionSDK.shared.logInfo("TransactionMonitor: Starting transaction monitoring on iOS")
+                    
+                    if #available(iOS 15.0, *) {
+                        ASAAttributionSDK.shared.logInfo("TransactionMonitor: Using StoreKit 2 listener (iOS 15+)")
+                        self.startStoreKit2Listener()
+                    } else {
+                        ASAAttributionSDK.shared.logInfo("TransactionMonitor: Using StoreKit 1 listener (iOS < 15)")
+                        self.startStoreKit1Listener()
+                    }
+                    
+                    // Also start StoreKit 1 listener for restored transactions even on iOS 15+
+                    // This ensures we capture any restored transactions that might not come through StoreKit 2
+                    if #available(iOS 15.0, *) {
+                        ASAAttributionSDK.shared.logInfo("TransactionMonitor: Adding StoreKit 1 observer for additional coverage")
+                        SKPaymentQueue.default().add(self)
+                    }
                 }
                 #else
-                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Using StoreKit 1 listener (non-iOS platform)")
-                self.startStoreKit1Listener()
-                #endif
-                
-                // Also start StoreKit 1 listener for restored transactions even on iOS 15+
-                // This ensures we capture any restored transactions that might not come through StoreKit 2
-                #if os(iOS)
-                if #available(iOS 15.0, *) {
-                    ASAAttributionSDK.shared.logInfo("TransactionMonitor: Adding StoreKit 1 observer for additional coverage")
-                    SKPaymentQueue.default().add(self)
-                }
+                // Non-iOS platform - don't start monitoring
+                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Non-iOS platform detected - StoreKit monitoring disabled")
                 #endif
             }
         }
@@ -90,10 +102,22 @@ public final class TransactionMonitor: NSObject {
                     self.storeKit2Task?.cancel()
                     self.storeKit2Task = nil
                 }
+                
+                // Always remove on native iOS
+                // Only skip on iPad-on-Mac (where we never added in the first place)
+                var shouldRemove = true
+                if #available(iOS 14.0, *) {
+                    if ProcessInfo.processInfo.isiOSAppOnMac {
+                        shouldRemove = false
+                    }
+                }
+                
+                if shouldRemove {
+                    ASAAttributionSDK.shared.logInfo("TransactionMonitor: Removing from SKPaymentQueue")
+                    SKPaymentQueue.default().remove(self)
+                }
                 #endif
                 
-                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Removing from SKPaymentQueue")
-                SKPaymentQueue.default().remove(self)
                 ASAAttributionSDK.shared.logInfo("TransactionMonitor: Monitoring stopped successfully")
             }
         }
@@ -135,6 +159,12 @@ public final class TransactionMonitor: NSObject {
     #if os(iOS)
     @available(iOS 15.0, *)
     private func startStoreKit2Listener() {
+        // Runtime check for iPad on macOS - exit early if detected
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            ASAAttributionSDK.shared.logInfo("TransactionMonitor: StoreKit 2 not available on iPad apps running on macOS")
+            return
+        }
+        
         ASAAttributionSDK.shared.logInfo("TransactionMonitor: Starting StoreKit 2 listener")
         
         storeKit2Task = Task.detached(priority: .background) { [weak self] in
@@ -206,9 +236,25 @@ public final class TransactionMonitor: NSObject {
         SKPaymentQueue.default().add(self)
         ASAAttributionSDK.shared.logInfo("TransactionMonitor: StoreKit 1 listener setup complete")
         
-        // Also trigger restore to catch any pending restored transactions
-        ASAAttributionSDK.shared.logInfo("TransactionMonitor: Triggering restore completed transactions to catch any pending restorations")
-        SKPaymentQueue.default().restoreCompletedTransactions()
+        // Only trigger restore on native iOS devices, not on macOS or iPad-on-Mac
+        // This prevents crashes while maintaining existing behavior on iOS
+        #if os(iOS)
+        if #available(iOS 14.0, *) {
+            if !ProcessInfo.processInfo.isiOSAppOnMac {
+                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Triggering restore completed transactions to catch any pending restorations")
+                SKPaymentQueue.default().restoreCompletedTransactions()
+            } else {
+                ASAAttributionSDK.shared.logInfo("TransactionMonitor: Skipping restore on iPad-on-Mac to prevent crashes")
+            }
+        } else {
+            // iOS 13 and below - no isiOSAppOnMac check available, just call restore
+            ASAAttributionSDK.shared.logInfo("TransactionMonitor: Triggering restore completed transactions to catch any pending restorations")
+            SKPaymentQueue.default().restoreCompletedTransactions()
+        }
+        #else
+        // Non-iOS platforms - skip restore to prevent crashes
+        ASAAttributionSDK.shared.logInfo("TransactionMonitor: Skipping restore on non-iOS platform to prevent crashes")
+        #endif
     }
 }
 
