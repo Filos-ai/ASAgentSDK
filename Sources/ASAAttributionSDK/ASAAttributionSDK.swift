@@ -88,6 +88,28 @@ public class ASAAttributionSDK {
             return
         }
         
+        // Platform validation - SDK only works on native iOS devices
+        #if !os(iOS)
+        logInfo("⚠️ ASA Attribution SDK is only supported on iOS devices.")
+        logInfo("Detected platform: \(Self.platformDescription())")
+        logInfo("SDK will not initialize. This is expected behavior on non-iOS platforms.")
+        return
+        #else
+        // Additional runtime check for iPad apps running on macOS
+        if #available(iOS 14.0, *) {
+            if ProcessInfo.processInfo.isiOSAppOnMac {
+                logInfo("⚠️ ASA Attribution SDK detected iPad app running on macOS.")
+                logInfo("Platform: \(Self.platformDescription())")
+                logInfo("AdServices framework is not available on macOS.")
+                logInfo("SDK will not initialize. This is expected behavior.")
+                return
+            }
+        }
+        #endif
+        
+        logInfo("✅ Platform validated: \(Self.platformDescription())")
+        logInfo("ASA Attribution SDK initializing...")
+        
         // Set up dependencies if not already set (for testing)
         if dependencies == nil {
             dependencies = .production(apiKey: apiKey)
@@ -111,6 +133,20 @@ public class ASAAttributionSDK {
             guard let self = self else { return }
             
             self.logInfo("Starting ASA Attribution SDK configuration flow")
+            
+            // Early exit for unsupported platforms (defensive check)
+            #if !os(iOS)
+            self.logInfo("Platform not supported (non-iOS). Terminating SDK operations.")
+            return
+            #else
+            if #available(iOS 14.0, *) {
+                if ProcessInfo.processInfo.isiOSAppOnMac {
+                    self.logInfo("iPad app on macOS detected. Terminating SDK operations as AdServices is unavailable.")
+                    return
+                }
+            }
+            #endif
+            
             self.logInfo(self.stateManager.debugDescription())
             
             // Check if this is a first install vs an app update
@@ -564,5 +600,54 @@ public class ASAAttributionSDK {
         } else {
             os_log("%{public}@", log: osLog, type: .error, message)
         }
+    }
+}
+
+// MARK: - Platform Detection Extension
+
+extension ASAAttributionSDK {
+    
+    /// Checks if the current platform supports ASA Attribution
+    /// - Returns: true if running on native iOS device (not macOS, not iPad-on-Mac)
+    public static func isPlatformSupported() -> Bool {
+        #if os(iOS)
+        // Check if running on macOS (iPad app on Mac)
+        if #available(iOS 14.0, *) {
+            return !ProcessInfo.processInfo.isiOSAppOnMac
+        }
+        return true
+        #else
+        return false
+        #endif
+    }
+    
+    /// Returns a description of the current platform
+    internal static func platformDescription() -> String {
+        #if os(iOS)
+        if #available(iOS 14.0, *) {
+            if ProcessInfo.processInfo.isiOSAppOnMac {
+                return "iPad app running on macOS (Apple Silicon)"
+            }
+        }
+        return "iOS"
+        #elseif os(macOS)
+        return "macOS"
+        #elseif os(watchOS)
+        return "watchOS"
+        #elseif os(tvOS)
+        return "tvOS"
+        #else
+        return "Unknown"
+        #endif
+    }
+    
+    /// Returns detailed platform information
+    /// - Returns: Human-readable platform description with support status
+    public static func getPlatformInfo() -> String {
+        return """
+        Platform: \(platformDescription())
+        Supported: \(isPlatformSupported() ? "Yes" : "No")
+        Reason: \(isPlatformSupported() ? "Running on native iOS device" : "AdServices framework not available on this platform")
+        """
     }
 }

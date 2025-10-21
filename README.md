@@ -11,6 +11,33 @@ ASAgentSDK automatically:
 
 The SDK runs entirely in the background with minimal performance impact.
 
+## ⚠️ Platform Support
+
+### ✅ Supported Platforms
+- **iPhone** (iOS 13.0+, attribution requires iOS 14.3+)
+- **iPad** (iPadOS 13.0+, attribution requires iPadOS 14.3+)
+
+### ❌ NOT Supported
+- **macOS** (native Mac apps)
+- **iPad apps running on macOS** (Apple Silicon Macs with "Designed for iPad" apps)
+- **Mac Catalyst** apps
+- Other platforms (watchOS, tvOS)
+
+### Why?
+The SDK relies on Apple's **AdServices framework**, which is **only available on native iOS devices**. The framework does not exist on macOS, which would cause crashes if the SDK attempted to initialize.
+
+### What Happens on Unsupported Platforms?
+The SDK automatically detects unsupported platforms and **gracefully terminates without crashing**. You'll see informational log messages explaining why the SDK didn't initialize.
+
+### Optional: Check Platform Support Programmatically
+```swift
+if ASAAttributionSDK.isPlatformSupported() {
+    ASAAttributionSDK.shared.configure(apiKey: "your-api-key")
+} else {
+    print("ASA Attribution not available on this platform")
+}
+```
+
 ## Installation
 
 ### Swift Package Manager
@@ -31,7 +58,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Filos-ai/ASAgentSDK.git", from: "1.0.1")
+    .package(url: "https://github.com/Filos-ai/ASAgentSDK.git", from: "1.1.3")
 ]
 ```
 

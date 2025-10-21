@@ -100,14 +100,40 @@ import Foundation
   - **Automatic termination** - Operations stop when not needed
   - **Efficient StoreKit integration** - Supports both v1 and v2
  
- ## Requirements
+## Requirements
  
- - iOS 13.0+ (Attribution only works on iOS 14.3+)
- - Swift 5.9+
- - StoreKit framework
- - AdServices framework (for ASA attribution)
+- iOS 13.0+ (Attribution only works on iOS 14.3+)
+- **IMPORTANT: Native iOS devices ONLY - Not supported on macOS, iPad apps running on macOS, or Catalyst apps**
+- Swift 5.9+
+- StoreKit framework
+- AdServices framework (for ASA attribution - iOS only)
  
- ## Backend Configuration
+## Platform Support
+ 
+✅ **Supported:**
+- iPhone running iOS 13.0+ (attribution requires iOS 14.3+)
+- iPad running iPadOS 13.0+ (attribution requires iPadOS 14.3+)
+ 
+❌ **NOT Supported:**
+- macOS (native Mac apps)
+- iPad apps running on macOS (Apple Silicon Macs with "Designed for iPad" apps)
+- Mac Catalyst apps
+- Other platforms (watchOS, tvOS)
+ 
+**Why?** The SDK relies on Apple's AdServices framework which is only available on native iOS devices.
+ 
+The SDK will automatically detect unsupported platforms and gracefully terminate without crashing.
+You can check platform support programmatically:
+ 
+```swift
+if ASAAttributionSDK.isPlatformSupported() {
+    ASAAttributionSDK.shared.configure(apiKey: "your-key")
+} else {
+    print("ASA Attribution not available on this platform")
+}
+```
+ 
+## Backend Configuration
  
  Ensure your backend functions are properly deployed:
  - `create-user`: Creates new user records
